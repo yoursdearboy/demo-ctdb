@@ -11,5 +11,13 @@ db = SQLAlchemy(app)
 
 @app.route("/")
 def hello_world():
-    res = db.engine.execute("SELECT 1").scalar()
-    return f"<p>Hello, {res}!</p>"
+    sql = "SELECT * FROM patients"
+    res = db.engine.execute(sql)
+
+    head = "<tr><th>ID</td><th>Фамилия</th><th>Имя</th></tr>"
+    row_tpl = "<tr><td>{patient_id}</td><td>{patient_last_name}</td><td>{patient_first_name}</td></tr>"
+    rows = [row_tpl.format(**r) for r in res]
+    body = "".join(rows)
+    table = f"<table><thead>{head}</thead><tbody>{body}</tbody></table>"
+
+    return table
